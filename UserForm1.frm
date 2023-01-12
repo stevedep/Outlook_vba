@@ -562,64 +562,6 @@ Private Sub CommandButton1_Click()
    ' TextBox1.SetFocus
 End Sub
 
-Sub SortDictionaryByKey(Dist As Dictionary)
-
-    'Set a reference to Microsoft Scripting Runtime by using
-    'Tools > References in the Visual Basic Editor (Alt+F11)
-
-    'Declare the variables
-    Dim Dict As Scripting.Dictionary
-    Dim TempDict As Scripting.Dictionary
-    Dim KeyVal As Variant
-    Dim Arr() As Variant
-    Dim Temp As Variant
-    Dim Txt As String
-    Dim i As Long
-    Dim j As Long
-    
-   
-    
-    'Allocate storage space for the dynamic array
-    ReDim Arr(0 To Dict.Count - 1)
-    
-    'Fill the array with the keys from the Dictionary
-    For i = 0 To Dict.Count - 1
-        Arr(i) = Dict.Keys(i)
-    Next i
-    
-    'Sort the array using the bubble sort method
-    For i = LBound(Arr) To UBound(Arr) - 1
-        For j = i + 1 To UBound(Arr)
-            If Arr(i) > Arr(j) Then
-                Temp = Arr(j)
-                Arr(j) = Arr(i)
-                Arr(i) = Temp
-            End If
-        Next j
-    Next i
-    
-    'Create an instance of the temporary Dictionary
-    Set TempDict = New Dictionary
-    
-    'Add the keys and items to the temporary Dictionary,
-    'using the sorted keys from the array
-    For i = LBound(Arr) To UBound(Arr)
-        KeyVal = Arr(i)
-        TempDict.Add Key:=KeyVal, Item:=Dict.Item(KeyVal)
-    Next i
-    
-    'Set the Dict object to the TempDict object
-    Set Dict = TempDict
-    
-    'Build a list of keys and items from the original Dictionary
-    For i = 0 To Dict.Count - 1
-        Txt = Txt & Dict.Keys(i) & vbTab & Dict.Items(i) & vbCrLf
-    Next i
-    
-    'Display the list in a message box
-    Debug.Print Txt
-    
-End Sub
 
 Option Explicit
 
