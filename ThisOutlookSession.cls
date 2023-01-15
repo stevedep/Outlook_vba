@@ -420,11 +420,11 @@ Sub outlookweava()
     Set xlBook = xlApp.Workbooks(FileName)
     
     If xlBook Is Nothing Then
-          fileDoesExist = Dir("C:\Users\310267217\OneDrive - Philips\Outlook Weava\" & FileName) > ""
+        fileDoesExist = Dir("C:\Temp\" & FileName) > ""
         ' Check for existing file
         If fileDoesExist Then
             ' Open Excel file
-            Set xlBook = xlApp.Workbooks.Open("C:\Users\310267217\OneDrive - Philips\Outlook Weava\" & FileName)
+            Set xlBook = xlApp.Workbooks.Open("C:\Temp\" & FileName)
             Set xlSheet = xlBook.Sheets(1)
         Else
             MsgBox "File not found"
