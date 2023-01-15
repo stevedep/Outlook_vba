@@ -398,7 +398,7 @@ Sub outlookweava()
     For i = 0 To UBound(v)
             text = text & v(i) & Chr(13) & Chr(10)
     Next
-
+    Set objsel = objDoc.Windows(1).Selection
  'Open excel
     Dim xlApp As Excel.Application
     Dim xlBook As Excel.Workbook
