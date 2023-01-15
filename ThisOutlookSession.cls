@@ -375,50 +375,38 @@ ApplyCategories.Show
 
 End Sub
 
+
 Sub outlookweava()
-    
-     Dim obApp As Object
-    Dim NewEmail As MailItem
-    Set obApp = Outlook.Application
+'add category to selected e-mail in inbox
     Set myOlExp = Application.ActiveExplorer
-  '   myOlExp.Activate
- Set myOlsel = myOlExp.Selection
+    Set myOlsel = myOlExp.Selection
     c = myOlsel.Item(1).Categories
     myOlsel.Item(1).Categories = c & "; AddedtoWeava"
-    Set obApp = Nothing
-    Set NewEmail = Nothing
-    
+
+'Get additional comments for the e-mail
     toelichting = InputBox("Toelichting")
 
-    Dim objApp As Outlook.Application
+ 'Store the selected text in a string and add new lines
     Dim objItem As Object
+    Set objItem = Application.ActiveInspector.CurrentItem
+    Set objInsp = objItem.GetInspector
+    Set objDoc = objInsp.WordEditor
+    Dim text As String
+    text = ""
+    Dim v() As String
+    v = Split(objDoc.Windows(1).Selection, Chr(13))
+    For i = 0 To UBound(v)
+            text = text & v(i) & Chr(13) & Chr(10)
+    Next
 
-    Set objApp = CreateObject("Outlook.Application")
-    Set objItem = objApp.ActiveInspector.CurrentItem
-
+ 'Open excel
     Dim xlApp As Excel.Application
     Dim xlBook As Excel.Workbook
     Dim xlSheet As Object
-    ' Filename
     Dim fileDoesExist As Boolean
     Dim FileName As String
 
-     Set objInsp = objItem.GetInspector
-     Set objDoc = objInsp.WordEditor
-     Dim text As String
-        
-        text = ""
-        
-        Dim v() As String
-        v = Split(objDoc.Windows(1).Selection, Chr(13))
-        For i = 0 To UBound(v)
-            
-            text = text & v(i) & Chr(13) & Chr(10)
-        Next
-
-     Set objsel = objDoc.Windows(1).Selection
-
-    ' Create Excel Application
+    ' Create Excel Application, in case its not running yet
     On Error Resume Next
     Set xlApp = GetObject(, "Excel.Application")
         If Err <> 0 Then
@@ -426,9 +414,9 @@ Sub outlookweava()
         End If
         
     xlApp.Visible = True
-    
     FileName = "outlook.xlsm"
-    
+
+    ' Check if the workbook is already open
     Set xlBook = xlApp.Workbooks(FileName)
     
     If xlBook Is Nothing Then
@@ -439,23 +427,16 @@ Sub outlookweava()
             Set xlBook = xlApp.Workbooks.Open("C:\Users\310267217\OneDrive - Philips\Outlook Weava\" & FileName)
             Set xlSheet = xlBook.Sheets(1)
         Else
-            ' Add Excel file
-            Set xlBook = xlApp.Workbooks.Add
-            With xlBook
-                .Title = "All Sales"
-                .Subject = "Sales"
-                .SaveAs FileName:="C:\Users\310267217\OneDrive - Philips\Outlook Weava\" & FileName
-            End With
+            MsgBox "File not found"
         End If
     End If
     
-  
+    ' The table is on the first sheet
     Set xlSheet = xlBook.Sheets(1)
     
-    ' Do stuff with Excel workbook
     With xlApp
         With xlBook
-            ' Add Excel VBA code to update workbook here
+            ' Get the table and populate with info
             Dim tbl As ListObject
             Set tbl = xlSheet.ListObjects("Tabel1")
             'Set tbl = Range("Tabel1").ListObject
@@ -468,12 +449,8 @@ Sub outlookweava()
             newrow.Range(1, 6).Value = objsel.Start
             newrow.Range(1, 7).Value = objsel.End
             newrow.Range(1, 8).Value = toelichting
-            
-            '.Close SaveChanges:=True
         End With
     End With
-    
-    'xlApp.Quit
     
     
     Set objInsp = Nothing
@@ -484,9 +461,9 @@ Sub outlookweava()
     Set xlBook = Nothing
     Set newrow = Nothing
     Set tbl = Nothing
-    Set objApp = Nothing
     Set objItem = Nothing
 End Sub
+
 
 Public Sub test()
 MsgBox "test"
