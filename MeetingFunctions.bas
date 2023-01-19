@@ -148,7 +148,7 @@ Sub GetAttendeeList()
                objItem.Save
             End If
             ' has a decline... set category
-            If ide > 1 Then
+            If ide >= 1 Then
                     objItem.Categories = objItem.Categories & "; DarkRed"
                     objItem.Save
             End If
