@@ -33,7 +33,6 @@ Dim objApp As Outlook.Application
     Set objAttendees = Nothing
 
 End Sub
-
 Sub GetAttendeeList()
     
     Dim objApp As Outlook.Application
@@ -120,13 +119,9 @@ Sub GetAttendeeList()
             Dim catstring  As String
             catstring = ""
     
-            'all accepted, set subject and category
-            If ia >= a Then
-                objItem.Subject = "(" & ia & "/" & a - 1 & ") " & sbj
-               objItem.Categories = "AllAccepted"
-               objItem.Save
+            
             'partial acceptance, set title and category based on proportion
-            ElseIf ia > 0 Then
+            If ia > 0 Then
             objItem.Subject = "(" & ia & "/-" & ide & "/" & a - 1 & ") " & sbj
                          If ia / (X - 2) <= 0.2 Then
                              objItem.Categories = "Red"
@@ -138,6 +133,8 @@ Sub GetAttendeeList()
                             objItem.Categories = "Yellow"
                         ElseIf ia / (X - 2) <= 0.99 Then
                             objItem.Categories = "LightGreen"
+                         ElseIf ia / (X - 2) <= 1 Then
+                            objItem.Categories = "AllAccepted"
                         End If
             objItem.Save
             'no one accepted, set title and category
@@ -158,6 +155,7 @@ Sub GetAttendeeList()
         Next
 End Sub
                 
+
 
 Sub RestoreTitles()
     Dim objApp As Outlook.Application
