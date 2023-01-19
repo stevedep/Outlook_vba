@@ -157,6 +157,30 @@ Sub GetAttendeeList()
             Set objAttendees = Nothing
         Next
 End Sub
+                
+
+Sub RestoreTitles()
+    Dim objApp As Outlook.Application
+    Dim objItem As Object
+   
+     ' Get calendar items withing the next 100 days
+    Set objApp = CreateObject("Outlook.Application")
+    Set oCalendar = Application.Session.GetDefaultFolder(olFolderCalendar)
+    today = Format(DateAdd("d", -1, Date), "dd/mm/yyyy")
+    inweek = Format(DateAdd("d", 100, Date), "dd/mm/yyyy")
+    strFilter = "[Start] > '" & today & "' And [Start] < '" & inweek & "'"
+    Set calendarItems = oCalendar.Items
+    calendarItems.IncludeRecurrences = False
+    Set oItems = calendarItems.Restrict(strFilter)
+    
+    ' Iterate these items and get the attendance and set the category and title
+    For Each objItem In oItems
+            'recover the title
+            objItem.Subject = objItem.ConversationTopic
+            objItem.Save
+            Set objItem = Nothing
+        Next
+End Sub
 
 Sub test()
 Strvar = "(4/7) Churn analytics bi-weekly"
