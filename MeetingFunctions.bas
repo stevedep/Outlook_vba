@@ -50,11 +50,11 @@ Sub GetAttendeeList()
     Dim strCopyData As String
     Dim strCount  As String
     Dim arrAccepted(500) As String
-     ' Get calendar items withing the next 100 days
+     ' Get calendar items withing the next 10 days
     Set objApp = CreateObject("Outlook.Application")
     Set oCalendar = Application.Session.GetDefaultFolder(olFolderCalendar)
     today = Format(DateAdd("d", -1, Date), "dd/mm/yyyy")
-    inweek = Format(DateAdd("d", 100, Date), "dd/mm/yyyy")
+    inweek = Format(DateAdd("d", 10, Date), "dd/mm/yyyy")
     strFilter = "[Start] > '" & today & "' And [Start] < '" & inweek & "'"
     Set calendarItems = oCalendar.Items
     calendarItems.IncludeRecurrences = False
@@ -104,24 +104,19 @@ Sub GetAttendeeList()
                             End Select
                     End If
         Next
-            ' construct the subject using the counts
-            Strvar = objItem.Subject
-            StartPos = 1
-            If InStr(1, Strvar, ") ", vbTextCompare) > 0 Then
-                StartPos = InStr(1, Strvar, ") ", vbTextCompare)
-            End If
-            sbj = Mid(Strvar, StartPos, Len(Strvar) - StartPos + 1)
-            Dim bodystring As String
-            bodystring = objItem.Body
-        
+            
             'reset first
             objItem.Categories = ""
             Dim catstring  As String
             catstring = ""
-    
-            
+            sbj = objItem.Subject
+            'all accepted, set subject and category
+            If ia >= a Then
+                objItem.Subject = "(" & ia & "/" & a - 1 & ") " & sbj
+               objItem.Categories = "AllAccepted"
+               objItem.Save
             'partial acceptance, set title and category based on proportion
-            If ia > 0 Then
+            ElseIf ia > 0 Then
             objItem.Subject = "(" & ia & "/-" & ide & "/" & a - 1 & ") " & sbj
                          If ia / (X - 2) <= 0.2 Then
                              objItem.Categories = "Red"
@@ -133,8 +128,6 @@ Sub GetAttendeeList()
                             objItem.Categories = "Yellow"
                         ElseIf ia / (X - 2) <= 0.99 Then
                             objItem.Categories = "LightGreen"
-                         ElseIf ia / (X - 2) <= 1 Then
-                            objItem.Categories = "AllAccepted"
                         End If
             objItem.Save
             'no one accepted, set title and category
@@ -145,7 +138,7 @@ Sub GetAttendeeList()
                objItem.Save
             End If
             ' has a decline... set category
-            If ide >= 1 Then
+            If ide > 1 Then
                     objItem.Categories = objItem.Categories & "; DarkRed"
                     objItem.Save
             End If
